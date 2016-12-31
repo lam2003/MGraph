@@ -48,8 +48,8 @@ int LinkQueue_Append(LinkQueue* queue, void* item) // O(1)
 {
     TLinkQueue* sQueue = (TLinkQueue*)queue;
     TLinkQueueNode* node = (TLinkQueueNode*)malloc(sizeof(TLinkQueueNode));
-    int ret = (sQueue != NULL ) && (item != NULL) && (node != NULL);
-    
+    int ret = (sQueue != NULL ) && (node != NULL);
+	
     if( ret )
     {
         node->item = item;

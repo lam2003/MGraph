@@ -22,7 +22,7 @@ MGraph* MGraph_Create(MVertex** v, int n)
 			int *p = NULL;
 			ret->count = n;
 			ret->v = (MVertex **)calloc(n, sizeof(MVertex *));
-			ret->matrix = (int **)calloc(n, sizeof(int *));
+			ret->matrix = (int **)malloc(n*sizeof(int *));
 			p = (int *)calloc(n*n, sizeof(int));
 			if (ret->v != NULL && ret->matrix != NULL && p != NULL)
 			{
@@ -52,8 +52,8 @@ void MGraph_Destroy(MGraph* graph)
 	if (tGraph != NULL)
 	{
 		free(tGraph->matrix);
-		free(*tGraph->matrix);//equal p
-		free(tGraph->matrix);
+		free((int *)tGraph->matrix[0]);//equal p
+		free(tGraph->v);
 		free(tGraph);
 	}
 }
@@ -196,50 +196,21 @@ void MGraph_DFS(MGraph* graph, int v, MGraph_Printf* pFunc)
 	}
 	free(visited);
 }
-/*
+
 static void bfs(TMGraph *tGraph, int v, int *visited, MGraph_Printf *pFunc)
 {
-	LinkQueue * queue = LinkQueue_Create();
-	if (queue != NULL)
-	{
-		LinkQueue_Append(queue, tGraph->v+v);
-		visited[v] = 1;
-		while (LinkQueue_Length(queue))
-		{
-			int i = 0;
-			
-			v = (MVertex **)LinkQueue_Retrieve(queue)-tGraph->v;
-			
-			pFunc(tGraph->v[v]);
-			
-			printf(",");
-			
-			for (i = 0; i < tGraph->count; i++)
-			{
-				if (tGraph->matrix[v][i] != 0 && !visited[i])
-				{
-					LinkQueue_Append(queue,tGraph->v + i );
-					visited[i] = 1;
-				}
-			}
-		}
-	}
-	LinkQueue_Destroy(queue);
-}
-*/
-static void bfs(TMGraph *tGraph, int v, int *visited, MGraph_Printf *pFunc)
-{
+	
 	LinkQueue * queue = LinkQueue_Create();
 	if (queue != NULL)
 	{
 		LinkQueue_Append(queue,  v);
 		visited[v] = 1;
-		while (LinkQueue_Length(queue))
+		while (LinkQueue_Length(queue) >0 )
 		{
 			int i = 0;
 
-			v = (MVertex**)LinkQueue_Retrieve(queue);
-
+			v = LinkQueue_Retrieve(queue) ;
+			
 			pFunc(tGraph->v[v]);
 
 			printf(",");
@@ -248,7 +219,7 @@ static void bfs(TMGraph *tGraph, int v, int *visited, MGraph_Printf *pFunc)
 			{
 				if (tGraph->matrix[v][i] != 0 && !visited[i])
 				{
-					LinkQueue_Append(queue, i);
+					LinkQueue_Append(queue,  i);
 					visited[i] = 1;
 				}
 			}
